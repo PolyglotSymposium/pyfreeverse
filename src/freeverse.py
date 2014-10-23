@@ -44,7 +44,7 @@ class Should:
             message = self.__function(ActualValue(parent_output))
         except Exception as error:
             message = _format_exception(error)
-        return Result(self.__description, message)
+        return Result('should ' + self.__description, message)
 
 class Phrase:
     @classmethod

@@ -16,7 +16,7 @@ class FreeverseTests(unittest.TestCase):
         self.assertEqual('True', result.description())
         self.assertTrue(result.passed())
         first_child = result.children()[0]
-        self.assertEqual('be true', first_child.description())
+        self.assertEqual('should be true', first_child.description())
         self.assertTrue(first_child.passed())
         self.assertEqual('', first_child.message())
 
@@ -29,7 +29,7 @@ class FreeverseTests(unittest.TestCase):
         self.assertEqual('Two', result.description())
         self.assertTrue(result.passed())
         first_child = result.children()[0]
-        self.assertEqual('be false', first_child.description())
+        self.assertEqual('should be false', first_child.description())
         self.assertFalse(first_child.passed())
         self.assertEqual('2 does not equal False', first_child.message())
 
