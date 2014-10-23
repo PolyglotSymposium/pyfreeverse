@@ -43,5 +43,15 @@ class FreeverseTests(unittest.TestCase):
         self.assertEqual('IndexError raised: list index out of range', result.message())
         self.assertEqual(0, len(result.children()))
 
+    def test_should_phrase_formats_error_messages(self):
+        specs = SpecsFor('Tests for the Freeverse spec library')
+        specs.add('This test', lambda: None, Should('fail because of an exception', lambda x: [][1]))
+
+        result = specs.run().children()[0]
+
+        result = result.children()[0]
+        self.assertFalse(result.passed())
+        self.assertEqual('IndexError raised: list index out of range', result.message())
+
 if __name__ == '__main__':
     unittest.main()

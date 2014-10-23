@@ -1,7 +1,3 @@
-_takesNoArgs = (lambda:
-    lambda func: len(__import__("inspect").getargspec(func)[0]) == 0
-)()
-
 class ActualValue:
     def __init__(self, actual_value):
         self.__actual_value = actual_value
@@ -11,15 +7,6 @@ class ActualValue:
             return ''
         else:
             return '%s does not equal %s' % (self.__actual_value, expected_value)
-
-class Should:
-    def __init__(self, description, function):
-        self.__description = description
-        self.__function = function
-
-    def run(self, parent_output):
-        message = self.__function(ActualValue(parent_output))
-        return Result(self.__description, message)
 
 class Result:
     def __init__(self, description, error, children=None):
@@ -38,6 +25,26 @@ class Result:
 
     def children(self):
         return self.__children
+
+_takesNoArgs = (lambda:
+    lambda func: len(__import__("inspect").getargspec(func)[0]) == 0
+)()
+
+
+def _format_exception(exception):
+    return '%s raised: %s' % (exception.__class__.__name__, exception)
+
+class Should:
+    def __init__(self, description, function):
+        self.__description = description
+        self.__function = function
+
+    def run(self, parent_output):
+        try:
+            message = self.__function(ActualValue(parent_output))
+        except Exception as error:
+            message = _format_exception(error)
+        return Result(self.__description, message)
 
 class Phrase:
     @classmethod
@@ -67,7 +74,7 @@ class Phrase:
             else:
                 output = self.__function(parent_output)
         except Exception as error:
-            message = '%s raised: %s' % (error.__class__.__name__, str(error))
+            message = _format_exception(error)
 
         return Result(self.__description, message, self.__run_children(message, output))
 
