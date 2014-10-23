@@ -21,6 +21,22 @@ or
 
     Should(<description>, <code-clause>)
 
+For example:
+
+```python
+from freeverse import SpecsFor, Should, Expect, it
+specs = SpecsFor('README examples')
+
+specs.add('5', lambda: 5,
+    ('plus', lambda x: lambda y: x + y,
+        ('2', lambda plus5: plus5(2), Should('be 7', it.should_be(7))),
+        ('5', lambda plus5: plus5(5), Should('be 9', lambda nine: nine.should_be(9)))
+    )
+)
+
+specs.add('An empty list', lambda: [], ('has a len() of zero', lambda l: Expect(len(l)).to_equal(0)))
+```
+
 The top-level tuple is passed into the `spec` function which parses and
 registers the spec. The idea is to have largely free-forms specs that emphasize
 human readability and structuring the specs in a way that makes sense for the
@@ -35,20 +51,9 @@ leaf node that has not been wrapped with should. This should also reduce code
 duplication because you can easy form a set of specs around one object or action
 and do not have to repeat those since you can break the code down into
 "clauses". Also, there is a Result object which is illustrated below. In case it
-was not clear above, the piping would be independent for each leaf node; i.e. if
-I have a spec of the form,
-
-```python
-spec('5', lambda: 5,
-    ('plus', lambda x: lambda y: x + y,
-        ('2', lambda plus5: plus5(2), should('be 7', Result.should_be(7))),
-        ('5', lambda plus5: plus5(5), should('be 9', Result.should_be(9)))
-    )
-)
-```
-
-Then it will execute like this, where '|' represents the result of one
-thing being piped in to the next:
+was not clear above, the piping would be independent for each leaf node; i.e.
+take the second spec (the one for 5) above. It will execute like this, where '|'
+represents the result of one thing being piped in to the next:
 
     5 | +2 | 7 | passed
     5 | +5 | 10 | failed
