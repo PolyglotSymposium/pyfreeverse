@@ -1,15 +1,25 @@
-import inspect
+_takesNoArgs = (lambda:
+    lambda func: len(__import__("inspect").getargspec(func)[0]) == 0
+)()
 
-class Should:
+class ActualValue:
     def __init__(self, actual_value):
         self.__actual_value = actual_value
 
     def should_equal(self, expected_value):
-        if self.__actual_value != expected_value:
-            raise AssertionError('%s does not equal %s' % (self.__actual_value, expected_value))
+        if self.__actual_value == expected_value:
+            return ''
+        else:
+            return '%s does not equal %s' % (self.__actual_value, expected_value)
 
-def should(description, function):
-    return Phrase(description, lambda value: function(Should(value)), ())
+class Should:
+    def __init__(self, description, function):
+        self.__description = description
+        self.__function = function
+
+    def run(self, parent_output):
+        message = self.__function(ActualValue(parent_output))
+        return Result(self.__description, message)
 
 class Result:
     def __init__(self, description, error, children=None):
@@ -42,20 +52,24 @@ class Phrase:
         self.__function = function
         self.__children = (Phrase.make(child) for child in children)
 
+    def __run_children(self, message, output):
+        if message == '':
+            return [child.run(output) for child in self.__children]
+        else:
+            return []
+
     def run(self, parent_output=None):
-        passed = True
-        numargs = len(inspect.getargspec(self.__function)[0])
         message = ''
+        output = None
         try:
-            if numargs == 0:
+            if _takesNoArgs(self.__function):
                 output = self.__function()
             else:
                 output = self.__function(parent_output)
-        except AssertionError as error:
-            passed = False
+        except Exception as error:
             message = str(error)
 
-        return Result(self.__description, message, [child.run(output) for child in self.__children])
+        return Result(self.__description, message, self.__run_children(message, output))
 
 class SpecsFor:
     def __init__(self, description):
