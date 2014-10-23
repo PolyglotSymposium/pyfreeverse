@@ -38,12 +38,14 @@ and do not have to repeat those since you can break the code down into
 was not clear above, the piping would be independent for each leaf node; i.e. if
 I have a spec of the form,
 
-    spec('5', lambda: 5,
-        ('plus', lambda x: lambda y: x + y,
-            ('2', lambda plus5: plus5(2), should('be 7', Result.should_be(7))),
-            ('5', lambda plus5: plus5(5), should('be 9', Result.should_be(9)))
-        )
+```python
+spec('5', lambda: 5,
+    ('plus', lambda x: lambda y: x + y,
+        ('2', lambda plus5: plus5(2), should('be 7', Result.should_be(7))),
+        ('5', lambda plus5: plus5(5), should('be 9', Result.should_be(9)))
     )
+)
+```
 
 Then it will execute like this, where '|' represents the result of one
 thing being piped in to the next:
