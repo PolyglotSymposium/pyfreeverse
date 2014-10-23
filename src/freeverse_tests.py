@@ -40,6 +40,7 @@ class FreeverseTests(unittest.TestCase):
         result = specs.run().children()[0]
 
         self.assertFalse(result.passed())
+        self.assertEqual('IndexError raised: list index out of range', result.message())
         self.assertEqual(0, len(result.children()))
 
 if __name__ == '__main__':

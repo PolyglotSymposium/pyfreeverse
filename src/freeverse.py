@@ -67,7 +67,7 @@ class Phrase:
             else:
                 output = self.__function(parent_output)
         except Exception as error:
-            message = str(error)
+            message = '%s raised: %s' % (error.__class__.__name__, str(error))
 
         return Result(self.__description, message, self.__run_children(message, output))
 
