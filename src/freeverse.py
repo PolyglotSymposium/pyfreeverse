@@ -72,7 +72,10 @@ class Phrase:
     @classmethod
     def make(self, obj):
         if type(obj) == type(()):
-            return Phrase(*obj)
+            if len(obj) == 2:
+                return Verify(*obj)
+            else:
+                return Phrase(*obj)
         else:
             return obj
 
