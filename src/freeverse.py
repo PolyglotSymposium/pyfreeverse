@@ -15,6 +15,13 @@ class Expect:
     def to_equal(self, expected_value):
         return self.__actual_value.should_equal(expected_value)
 
+it = lambda: it
+for method_name in dir(ActualValue):
+    if method_name.startswith('should'):
+        setattr(it, method_name,
+            lambda expected:
+                lambda actual_value: getattr(actual_value, method_name)(expected))
+
 class Result:
     def __init__(self, description, error, children=None):
         self.__description = description
@@ -68,21 +75,20 @@ class Should:
             message = _format_exception(error)
         return Result('should ' + self.__description, message)
 
-class Phrase:
-    @classmethod
-    def make(self, obj):
-        if type(obj) == type(()):
-            if len(obj) == 2:
-                return Verify(*obj)
-            else:
-                return Phrase(*obj)
+def make_phrase_from(obj):
+    if type(obj) == type(()):
+        if len(obj) == 2:
+            return Verify(*obj)
         else:
-            return obj
+            return Phrase(*obj)
+    else:
+        return obj
 
+class Phrase:
     def __init__(self, description, function, children):
         self.__description = description
         self.__function = function
-        self.__children = (Phrase.make(child) for child in children)
+        self.__children = (make_phrase_from(child) for child in children)
 
     def __run_children(self, message, output):
         if message == '':

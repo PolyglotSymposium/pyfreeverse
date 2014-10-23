@@ -2,7 +2,7 @@
 
 import unittest
 
-from freeverse import SpecsFor, Should, Expect
+from freeverse import SpecsFor, Should, Expect, it
 
 class FreeverseTests(unittest.TestCase):
     def test_simplest_passing_case(self):
@@ -72,6 +72,18 @@ class FreeverseTests(unittest.TestCase):
         result = result.children()[0]
         self.assertFalse(result.passed())
         self.assertEqual('IndexError raised: list index out of range', result.message())
+
+    def test_it_style_shorthand(self):
+        specs = SpecsFor('Tests for the Freeverse spec library')
+        specs.add('True', lambda: True, Should('be true', it.should_equal(True)))
+
+        result = specs.run()
+
+        result = result.children()[0]
+        self.assertTrue(result.passed())
+        first_child = result.children()[0]
+        self.assertEqual('', first_child.message())
+        self.assertTrue(first_child.passed())
 
 if __name__ == '__main__':
     unittest.main()
