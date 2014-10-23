@@ -8,6 +8,13 @@ class ActualValue:
         else:
             return '%s does not equal %s' % (self.__actual_value, expected_value)
 
+class Expect:
+    def __init__(self, actual_value):
+        self.__actual_value = ActualValue(actual_value)
+
+    def to_equal(self, expected_value):
+        return self.__actual_value.should_equal(expected_value)
+
 class Result:
     def __init__(self, description, error, children=None):
         self.__description = description
@@ -33,6 +40,21 @@ _takesNoArgs = (lambda:
 
 def _format_exception(exception):
     return '%s raised: %s' % (exception.__class__.__name__, exception)
+
+class Verify:
+    def __init__(self, description, function):
+        self.__description = description
+        self.__function = function
+
+    def run(self, parent_output):
+        try:
+            if _takesNoArgs(self.__function):
+                message = self.__function()
+            else:
+                message = self.__function(parent_output)
+        except Exception as error:
+            message = _format_exception(error)
+        return Result(self.__description, message)
 
 class Should:
     def __init__(self, description, function):
