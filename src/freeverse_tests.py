@@ -2,7 +2,7 @@
 
 import unittest
 
-from freeverse import SpecsFor, Should, Expect, it
+from freeverse import SpecsFor, Should, Expect, It
 
 class FreeverseTests(unittest.TestCase):
     def test_simplest_passing_case(self):
@@ -75,7 +75,7 @@ class FreeverseTests(unittest.TestCase):
 
     def test_it_style_shorthand(self):
         specs = SpecsFor('Tests for the Freeverse spec library')
-        specs.add('True', lambda: True, Should('be true', it.should_equal(True)))
+        specs.add('True', lambda: True, Should('be true', It.should_equal(True)))
 
         result = specs.run()
 

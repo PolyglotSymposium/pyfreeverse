@@ -12,13 +12,16 @@ class Expect:
     def __init__(self, actual_value):
         self.__actual_value = ActualValue(actual_value)
 
-    def to_equal(self, expected_value):
-        return self.__actual_value.should_equal(expected_value)
+    def __getattr__(self, name):
+        if name.startswith('to'):
+            return getattr(self.__actual_value, 'should' + name[2:])
+        else:
+            raise AttributeError
 
-it = lambda: it
+It = lambda: It
 for method_name in dir(ActualValue):
     if method_name.startswith('should'):
-        setattr(it, method_name,
+        setattr(It, method_name,
             lambda expected:
                 lambda actual_value: getattr(actual_value, method_name)(expected))
 
