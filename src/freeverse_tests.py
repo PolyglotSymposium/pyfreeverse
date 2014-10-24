@@ -90,7 +90,7 @@ class FreeverseTests(unittest.TestCase):
 
     def test_it_style_shorthand(self):
         specs = SpecsFor('Tests for the Freeverse spec library')
-        specs.add('True', lambda: True, Should('be true', It.should_equal(True)))
+        specs.add('True', True, Should('be true', It.should_equal(True)))
 
         result = specs.run()
 

@@ -111,10 +111,13 @@ class Phrase:
         message = ''
         output = None
         try:
-            if _takesNoArgs(self.__function):
-                output = self.__function()
+            if callable(self.__function):
+                if _takesNoArgs(self.__function):
+                    output = self.__function()
+                else:
+                    output = self.__function(parent_output)
             else:
-                output = self.__function(parent_output)
+                output = self.__function
         except Exception as error:
             message = _format_exception(error)
 
