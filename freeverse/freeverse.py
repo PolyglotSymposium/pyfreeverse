@@ -13,6 +13,14 @@ class ActualValue:
             return ''
         else:
             return '%s does not equal %s' % (self.__actual_value, expected_value)
+    should_be = should_equal
+
+    def should_not_equal(self, expected_value):
+        if self.__actual_value != expected_value:
+            return ''
+        else:
+            return '%s does not equal %s' % (self.__actual_value, expected_value)
+    should_not_be = should_not_equal
 
 class Expect:
     def __init__(self, actual_value):
@@ -88,10 +96,15 @@ class Should:
 
 def make_phrase_from(obj):
     if type(obj) == type(()):
+        if len(obj) == 1:
+            if obj[0].__class__ == Should:
+                return obj[0]
+            else:
+                obj = obj[0]
         if len(obj) == 2:
             return Verify(*obj)
         else:
-            return Phrase(*obj)
+            return Phrase(obj[0], obj[1], obj[2:])
     else:
         return obj
 
@@ -141,5 +154,18 @@ class FlatOutput:
     def __init__(self, stream):
         self.__stream = stream;
 
+    def __write_output(self, result, parent_description=None):
+        if parent_description == None:
+            description = result.description()
+        else:
+            description = '%s %s' % (parent_description, result.description())
+        if result.children() == None:
+            self.__stream.write('\t%s\n' % description)
+        else:
+            for child_result in result.children():
+                self.__write_output(child_result, description)
+
     def write(self, results):
-        self.__stream.write('True should be true')
+        self.__stream.write(results.description() + '\n')
+        for result in results.children():
+            self.__write_output(result)

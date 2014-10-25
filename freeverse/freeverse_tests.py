@@ -103,7 +103,7 @@ class FreeverseTests(unittest.TestCase):
 import io
 
 class FlatOutputterTests(unittest.TestCase):
-    def test_basic_case(self):
+    def test_simple_passing_case(self):
         specs = SpecsFor('Tests for the Freeverse spec library')
         specs.add('True', True, Should('be true', It.should_equal(True)))
 
@@ -112,7 +112,66 @@ class FlatOutputterTests(unittest.TestCase):
             specs.run_and_write_to(outputter)
             output = stream.getvalue()
 
-        self.assertEqual('True should be true', output)
+        expected = ('Tests for the Freeverse spec library\n'
+                    '\tTrue should be true\n')
+        self.assertEqual(expected, output)
+
+    def test_complex_case(self):
+        specs = SpecsFor('Tests for the Freeverse spec library')
+        specs.add('The square', lambda: lambda x: x**2,
+            ('of 0', lambda square: square(0),
+                Should('be 0', It.should_be(0)),
+                Should('be an idempotent operation', It.should_be(0))),
+            ('of 1', lambda square: square(1),
+                Should('be 1', It.should_be(1)),
+                Should('be an idempotent operation', It.should_be(1))),
+            ('of 2', lambda square: square(2),
+                Should('be 4', It.should_be(4)),
+                Should('not be an idempotent operation', It.should_not_be(1))),
+        )
+
+        with io.StringIO() as stream:
+            outputter = FlatOutput(stream)
+            specs.run_and_write_to(outputter)
+            output = stream.getvalue()
+
+        expected = ('Tests for the Freeverse spec library\n'
+                    '\tThe square of 0 should be 0\n'
+                    '\tThe square of 0 should be an idempotent operation\n'
+                    '\tThe square of 1 should be 1\n'
+                    '\tThe square of 1 should be an idempotent operation\n'
+                    '\tThe square of 2 should be 4\n'
+                    '\tThe square of 2 should not be an idempotent operation\n')
+        print(expected)
+        print(output)
+        self.assertEqual(expected, output)
 
 if __name__ == '__main__':
-    unittest.main()
+    #unittest.main()
+    specs = SpecsFor('Tests for the Freeverse spec library')
+    specs.add('The square', lambda: lambda x: x**2,
+        ('of 0', lambda square: square(0),
+            Should('be 0', It.should_be(0)),
+            Should('be an idempotent operation', It.should_be(0))),
+        ('of 1', lambda square: square(1),
+            Should('be 1', It.should_be(1)),
+            Should('be an idempotent operation', It.should_be(1))),
+        ('of 2', lambda square: square(2),
+            Should('be 4', It.should_be(4)),
+            Should('not be an idempotent operation', It.should_not_be(1))),
+    )
+
+    with io.StringIO() as stream:
+        outputter = FlatOutput(stream)
+        specs.run_and_write_to(outputter)
+        output = stream.getvalue()
+
+    expected = ('Tests for the Freeverse spec library\n'
+                '\tThe square of 0 should be 0\n'
+                '\tThe square of 0 should be an idempotent operation\n'
+                '\tThe square of 1 should be 1\n'
+                '\tThe square of 1 should be an idempotent operation\n'
+                '\tThe square of 2 should be 4\n'
+                '\tThe square of 2 should not be an idempotent operation\n')
+    print(expected)
+    print(output)
