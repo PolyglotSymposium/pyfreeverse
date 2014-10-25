@@ -7,5 +7,5 @@ setup(name='freeverse',
     author='Kazark',
     author_email='kazark@zoho.com',
     license='MIT',
-    packages=[],
+    packages=['freeverse'],
     zip_safe=False)
