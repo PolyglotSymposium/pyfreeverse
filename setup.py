@@ -8,4 +8,6 @@ setup(name='freeverse',
     author_email='kazark@zoho.com',
     license='MIT',
     packages=['freeverse'],
+    test_suite='nose.collector',
+    tests_require=['nose'],
     zip_safe=False)
