@@ -133,3 +133,13 @@ class SpecsFor:
 
     def run(self):
         return Phrase(self.__description, lambda: None, self.__children).run()
+
+    def run_and_write_to(self, outputter):
+        outputter.write(self.run())
+
+class FlatOutput:
+    def __init__(self, stream):
+        self.__stream = stream;
+
+    def write(self, results):
+        self.__stream.write('True should be true')

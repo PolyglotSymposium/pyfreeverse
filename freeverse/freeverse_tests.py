@@ -2,7 +2,7 @@
 
 import unittest
 
-from freeverse import ActualValue, SpecsFor, Should, Expect, It
+from freeverse import ActualValue, SpecsFor, Should, Expect, It, FlatOutput
 
 class ShouldStyleAssertionsTests(unittest.TestCase):
     def test_basic_Actual_Value_should_method_takes_predicate(self):
@@ -99,6 +99,20 @@ class FreeverseTests(unittest.TestCase):
         first_child = result.children()[0]
         self.assertEqual('', first_child.message())
         self.assertTrue(first_child.passed())
+
+import io
+
+class FlatOutputterTests(unittest.TestCase):
+    def test_basic_case(self):
+        specs = SpecsFor('Tests for the Freeverse spec library')
+        specs.add('True', True, Should('be true', It.should_equal(True)))
+
+        with io.StringIO() as stream:
+            outputter = FlatOutput(stream)
+            specs.run_and_write_to(outputter)
+            output = stream.getvalue()
+
+        self.assertEqual('True should be true', output)
 
 if __name__ == '__main__':
     unittest.main()
