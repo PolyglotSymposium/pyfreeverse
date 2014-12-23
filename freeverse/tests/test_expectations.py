@@ -42,17 +42,17 @@ class ExpectStyleAssertionsTests(ExpectationTests):
         self.assertEqual('', Expect(4).to_be(4))
         self.assertIsNotEmpty(Expect(4).to_be(2))
 
-    def test_expect_to_not_be_method_asserts_inequality(self):
-        self.assertEqual('', Expect(4).to_not_be(2))
-        self.assertIsNotEmpty(Expect(4).to_not_be(4))
+    def test_expect_not_to_be_method_asserts_inequality(self):
+        self.assertEqual('', Expect(4).not_to_be(2))
+        self.assertIsNotEmpty(Expect(4).not_to_be(4))
 
     def test_expect_to_equal_method_asserts_equality(self):
         self.assertEqual('', Expect(4).to_equal(4))
         self.assertIsNotEmpty(Expect(4).to_equal(2))
 
-    def test_expect_to_not_equal_method_asserts_inequality(self):
-        self.assertEqual('', Expect(4).to_not_equal(2))
-        self.assertIsNotEmpty(Expect(4).to_not_equal(4))
+    def test_expect_not_to_equal_method_asserts_inequality(self):
+        self.assertEqual('', Expect(4).not_to_equal(2))
+        self.assertIsNotEmpty(Expect(4).not_to_equal(4))
 
 # The error message should be the same as the for the cases above, so only test
 # that it is nonempty

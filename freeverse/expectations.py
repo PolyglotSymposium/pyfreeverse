@@ -29,6 +29,8 @@ class Expect:
     def __getattr__(self, name):
         if name.startswith('to'):
             return getattr(self.__actual_value, 'should' + name[2:])
+        elif name.startswith('not_to'):
+            return getattr(self.__actual_value, 'should_not' + name[6:])
         else:
             raise AttributeError
 

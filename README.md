@@ -76,5 +76,5 @@ The currently available out-of-the-box expectations are:
  + Basic equality expectations: `.should_be(...)` or `.should_equal(...)` or
    `Expect.to_be(...)` or `Expect.to_equal(...)`
  + Basic inequality expectations: `.should_not_be(...)` or
-   `.should_not_equal(...)` or `Expect.to_not_be(...)` or
-   `Expect.to_not_equal(...)`
+   `.should_not_equal(...)` or `Expect.not_to_be(...)` or
+   `Expect.not_to_equal(...)`
