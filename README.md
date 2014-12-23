@@ -15,7 +15,7 @@ Freeverse supports a hierarchical/nested spec of this form:
 
 or for the leaf nodes:
 
-    Verify(<description>, <code-clause>)
+    (<description>, <code-clause>)
 
 or
 
