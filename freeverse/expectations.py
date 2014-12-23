@@ -19,7 +19,7 @@ class ActualValue:
         if self.__actual_value != expected_value:
             return ''
         else:
-            return '%s does not equal %s' % (self.__actual_value, expected_value)
+            return '%s does equal %s' % (self.__actual_value, expected_value)
     should_not_be = should_not_equal
 
 class Expect:

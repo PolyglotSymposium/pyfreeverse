@@ -19,6 +19,10 @@ class ShouldStyleAssertionsTests(ExpectationTests):
         self.assertEqual('', ActualValue(4).should_be(4))
         self.assertEqual('4 does not equal 2', ActualValue(4).should_be(2))
 
+    def test_actual_value_should_not_be_method_asserts_inequality(self):
+        self.assertEqual('', ActualValue(4).should_not_be(2))
+        self.assertEqual('4 does equal 4', ActualValue(4).should_not_be(4))
+
 # The error message should be the same as the for the cases above, so only test
 # that it is nonempty
 class ExpectStyleAssertionsTests(ExpectationTests):
@@ -30,6 +34,10 @@ class ExpectStyleAssertionsTests(ExpectationTests):
         self.assertEqual('', Expect(4).to_be(4))
         self.assertIsNotEmpty(Expect(4).to_be(2))
 
+    def test_expect_to_not_be_method_asserts_inequality(self):
+        self.assertEqual('', Expect(4).to_not_be(2))
+        self.assertIsNotEmpty(Expect(4).to_not_be(4))
+
 # The error message should be the same as the for the cases above, so only test
 # that it is nonempty
 class ItStyleAssertionsTests(ExpectationTests):
@@ -40,6 +48,10 @@ class ItStyleAssertionsTests(ExpectationTests):
     def test_it_should_be_method_asserts_equality(self):
         self.assertEqual('', It.should_be(4)(ActualValue(4)))
         self.assertIsNotEmpty(It.should_be(2)(ActualValue(4)))
+
+    def test_it_should_not_be_method_asserts_inequality(self):
+        self.assertEqual('', It.should_not_be(2)(ActualValue(4)))
+        self.assertIsNotEmpty(It.should_not_be(4)(ActualValue(4)))
 
 if __name__ == '__main__':
     unittest.main()
