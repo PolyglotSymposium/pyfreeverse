@@ -9,6 +9,8 @@ The basic idea is that you should be able to shape the spec how you want to
 around the shape of your code and of the natural language descriptions you want
 to use.
 
+### Example
+
 Freeverse supports a hierarchical/nested spec of this form:
 
     (<description>, <code-clause>, (<sub-specs>))
@@ -65,3 +67,14 @@ parallel. The output will look like this:
     5 plus 5 should be 9
 
 or the like, depending on ouputter.
+
+### Expectations (Assertions)
+
+The currently available out-of-the-box expectations are:
+
+ + Basic predicate expectations: `.should(...)` or `Expect.to(...)`
+ + Basic equality expectations: `.should_be(...)` or `.should_equal(...)` or
+   `Expect.to_be(...)` or `Expect.to_equal(...)`
+ + Basic inequality expectations: `.should_not_be(...)` or
+   `.should_not_equal(...)` or `Expect.to_not_be(...)` or
+   `Expect.to_not_equal(...)`
