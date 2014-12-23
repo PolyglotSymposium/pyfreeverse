@@ -7,7 +7,7 @@ begin to shape this code more carefully.
 
 The basic idea is that you should be able to shape the spec how you want to
 around the shape of your code and of the natural language descriptions you want
-to use.
+to use, though it is probably best suited for functional code.
 
 ### Example
 
