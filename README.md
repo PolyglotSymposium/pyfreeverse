@@ -5,11 +5,11 @@ I'm trying to pioneer a new style of specs. So far I have just slapped a bunch
 of code together as a sort of brain dump. Soon it will be time to slow down and
 begin to shape this code more carefully.
 
-The basic idea is that you should be able to shape the specs how you want to
+The basic idea is that you should be able to shape the spec how you want to
 around the shape of your code and of the natural language descriptions you want
 to use.
 
-Freeverse supports a hierarchical/nested specs of this form:
+Freeverse supports a hierarchical/nested spec of this form:
 
     (<description>, <code-clause>, (<sub-specs>))
 
@@ -24,17 +24,17 @@ or
 For example:
 
 ```python
-from freeverse import SpecsFor, Should, Expect, it
-specs = SpecsFor('README examples')
+from freeverse import SpecFor, Should, Expect, It
+spec = SpecFor('README examples')
 
-specs.add('5', lambda: 5,
+spec.add('5', lambda: 5,
     ('plus', lambda x: lambda y: x + y,
-        ('2', lambda plus5: plus5(2), Should('be 7', it.should_be(7))),
+        ('2', lambda plus5: plus5(2), Should('be 7', It.should_be(7))),
         ('5', lambda plus5: plus5(5), Should('be 9', lambda nine: nine.should_be(9)))
     )
 )
 
-specs.add('An empty list', lambda: [], ('has a len() of zero', lambda l: Expect(len(l)).to_equal(0)))
+spec.add('An empty list', lambda: [], ('has a len() of zero', lambda l: Expect(len(l)).to_equal(0)))
 ```
 
 The top-level tuple is passed into the `spec` function which parses and
@@ -48,7 +48,7 @@ code-clause in an object which allows should-style assertions on it. Also it
 appends the word "should" to the beginning of that description of that clause
 The alternative is to use the `expect` function for expect-style assertions in a
 leaf node that has not been wrapped with should. This should also reduce code
-duplication because you can easy form a set of specs around one object or action
+duplication because you can easy form a set of tests around one object or action
 and do not have to repeat those since you can break the code down into
 "clauses". Also, there is a Result object which is illustrated below. In case it
 was not clear above, the piping would be independent for each leaf node; i.e.

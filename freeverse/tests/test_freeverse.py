@@ -2,7 +2,7 @@
 
 import unittest
 
-from freeverse import ActualValue, SpecsFor, Should, Expect, It, FlatOutput
+from freeverse import ActualValue, SpecFor, Should, Expect, It, FlatOutput
 
 class ShouldStyleAssertionsTests(unittest.TestCase):
     def test_basic_Actual_Value_should_method_takes_predicate(self):
@@ -21,10 +21,10 @@ class ItStyleAssertionsTests(unittest.TestCase):
 
 class FreeverseTests(unittest.TestCase):
     def test_simplest_passing_case(self):
-        specs = SpecsFor('Tests for the Freeverse spec library')
-        specs.add('True', lambda: True, Should('be true', lambda t: t.should_equal(True)))
+        spec = SpecFor('Tests for the Freeverse spec library')
+        spec.add('True', lambda: True, Should('be true', lambda t: t.should_equal(True)))
 
-        result = specs.run()
+        result = spec.run()
 
         self.assertEqual('Tests for the Freeverse spec library', result.description())
         result = result.children()[0]
@@ -36,10 +36,10 @@ class FreeverseTests(unittest.TestCase):
         self.assertEqual('', first_child.message())
 
     def test_simplest_failing_case(self):
-        specs = SpecsFor('Tests for the Freeverse spec library')
-        specs.add('Two', lambda: 2, Should('be false', lambda t: t.should_equal(False)))
+        spec = SpecFor('Tests for the Freeverse spec library')
+        spec.add('Two', lambda: 2, Should('be false', lambda t: t.should_equal(False)))
 
-        result = specs.run().children()[0]
+        result = spec.run().children()[0]
 
         self.assertEqual('Two', result.description())
         self.assertTrue(result.passed())
@@ -49,50 +49,50 @@ class FreeverseTests(unittest.TestCase):
         self.assertEqual('2 does not equal False', first_child.message())
 
     def test_if_parent_fails_children_are_not_run(self):
-        specs = SpecsFor('Tests for the Freeverse spec library')
-        specs.add('The first element of an empty list', lambda: [][1], Should('boom!', lambda t: None))
+        spec = SpecFor('Tests for the Freeverse spec library')
+        spec.add('The first element of an empty list', lambda: [][1], Should('boom!', lambda t: None))
 
-        result = specs.run().children()[0]
+        result = spec.run().children()[0]
 
         self.assertFalse(result.passed())
         self.assertEqual('IndexError raised: list index out of range', result.message())
         self.assertEqual(0, len(result.children()))
 
     def test_should_phrase_formats_error_messages(self):
-        specs = SpecsFor('Tests for the Freeverse spec library')
-        specs.add('This test', lambda: None, Should('fail because of an exception', lambda x: [][1]))
+        spec = SpecFor('Tests for the Freeverse spec library')
+        spec.add('This test', lambda: None, Should('fail because of an exception', lambda x: [][1]))
 
-        result = specs.run().children()[0]
+        result = spec.run().children()[0]
 
         result = result.children()[0]
         self.assertFalse(result.passed())
         self.assertEqual('IndexError raised: list index out of range', result.message())
 
     def test_supports_expect_phrases(self):
-        specs = SpecsFor('Tests for the Freeverse spec library')
-        specs.add('No matter what', lambda: None, ('1 equals 1', lambda: Expect(1).to_equal(1)))
+        spec = SpecFor('Tests for the Freeverse spec library')
+        spec.add('No matter what', lambda: None, ('1 equals 1', lambda: Expect(1).to_equal(1)))
 
-        result = specs.run().children()[0]
+        result = spec.run().children()[0]
 
         first_child = result.children()[0]
         self.assertEqual('1 equals 1', first_child.description())
         self.assertTrue(first_child.passed())
 
     def test_expect_phrase_formats_error_messages(self):
-        specs = SpecsFor('Tests for the Freeverse spec library')
-        specs.add('This test', lambda: [], ('fails because of an exception', lambda x: x[1]))
+        spec = SpecFor('Tests for the Freeverse spec library')
+        spec.add('This test', lambda: [], ('fails because of an exception', lambda x: x[1]))
 
-        result = specs.run().children()[0]
+        result = spec.run().children()[0]
 
         result = result.children()[0]
         self.assertFalse(result.passed())
         self.assertEqual('IndexError raised: list index out of range', result.message())
 
     def test_it_style_shorthand(self):
-        specs = SpecsFor('Tests for the Freeverse spec library')
-        specs.add('True', True, Should('be true', It.should_equal(True)))
+        spec = SpecFor('Tests for the Freeverse spec library')
+        spec.add('True', True, Should('be true', It.should_equal(True)))
 
-        result = specs.run()
+        result = spec.run()
 
         result = result.children()[0]
         self.assertTrue(result.passed())
@@ -104,12 +104,12 @@ import io
 
 class FlatOutputterTests(unittest.TestCase):
     def test_simple_passing_case(self):
-        specs = SpecsFor('Tests for the Freeverse spec library')
-        specs.add('True', True, Should('be true', It.should_equal(True)))
+        spec = SpecFor('Tests for the Freeverse spec library')
+        spec.add('True', True, Should('be true', It.should_equal(True)))
 
         with io.StringIO() as stream:
             outputter = FlatOutput(stream)
-            specs.run_and_write_to(outputter)
+            spec.run_and_write_to(outputter)
             output = stream.getvalue()
 
         expected = ('Tests for the Freeverse spec library\n'
@@ -117,8 +117,8 @@ class FlatOutputterTests(unittest.TestCase):
         self.assertEqual(expected, output)
 
     def test_complex_case(self):
-        specs = SpecsFor('Tests for the Freeverse spec library')
-        specs.add('The square', lambda: lambda x: x**2,
+        spec = SpecFor('Tests for the Freeverse spec library')
+        spec.add('The square', lambda: lambda x: x**2,
             ('of 0', lambda square: square(0),
                 Should('be 0', It.should_be(0)),
                 Should('be an idempotent operation', It.should_be(0))),
@@ -132,7 +132,7 @@ class FlatOutputterTests(unittest.TestCase):
 
         with io.StringIO() as stream:
             outputter = FlatOutput(stream)
-            specs.run_and_write_to(outputter)
+            spec.run_and_write_to(outputter)
             output = stream.getvalue()
 
         expected = ('Tests for the Freeverse spec library\n'
@@ -148,8 +148,8 @@ class FlatOutputterTests(unittest.TestCase):
 
 if __name__ == '__main__':
     #unittest.main()
-    specs = SpecsFor('Tests for the Freeverse spec library')
-    specs.add('The square', lambda: lambda x: x**2,
+    spec = SpecFor('Tests for the Freeverse spec library')
+    spec.add('The square', lambda: lambda x: x**2,
         ('of 0', lambda square: square(0),
             Should('be 0', It.should_be(0)),
             Should('be an idempotent operation', It.should_be(0))),
@@ -163,7 +163,7 @@ if __name__ == '__main__':
 
     with io.StringIO() as stream:
         outputter = FlatOutput(stream)
-        specs.run_and_write_to(outputter)
+        spec.run_and_write_to(outputter)
         output = stream.getvalue()
 
     expected = ('Tests for the Freeverse spec library\n'

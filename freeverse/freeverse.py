@@ -136,7 +136,7 @@ class Phrase:
 
         return Result(self.__description, message, self.__run_children(message, output))
 
-class SpecsFor:
+class SpecFor:
     def __init__(self, description):
         self.__description = description
         self.__children = []
