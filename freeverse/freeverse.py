@@ -1,5 +1,18 @@
 from .expectations import ActualValue
 
+class TestStep:
+    def __init__(self, description, func):
+        self.__execute_step = func
+
+    def run(self):
+        return self.__execute_step()
+
+class TestCase:
+    def __init__(self, steps):
+        pass
+    def run(self):
+        pass
+
 class Result:
     def __init__(self, description, error, children=None):
         self.__description = description
@@ -18,8 +31,9 @@ class Result:
     def children(self):
         return self.__children
 
+import inspect as __inspect
 _takesNoArgs = (lambda:
-    lambda func: len(__import__("inspect").getargspec(func)[0]) == 0
+    lambda func: len(__inspect.getargspec(func)[0]) == 0
 )()
 
 
@@ -79,6 +93,9 @@ class Phrase:
         else:
             return []
 
+    def flatten(self):
+        return self
+
     def run(self, parent_output=None):
         message = ''
         output = None
@@ -104,7 +121,8 @@ class SpecFor:
         self.__children.append((description, function, children))
 
     def run(self):
-        return Phrase(self.__description, lambda: None, self.__children).run()
+        tests = Phrase(self.__description, lambda: None, self.__children).flatten()
+        return tests.run()
 
     def run_and_write_to(self, outputter):
         outputter.write(self.run())
