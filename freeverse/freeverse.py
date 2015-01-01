@@ -19,10 +19,12 @@ class Result:
         return self.__children
 
 import inspect as __inspect
+import functools as _functools
 _countArgsOf = lambda func: len(__inspect.getargspec(func)[0])
 _takesNoArgs = lambda func: _countArgsOf(func) == 0
 
 class TestStep:
+
     def __init__(self, description, func):
         self.__execute_step = func
 
@@ -33,7 +35,7 @@ class TestStep:
         if numberOfArgs == 1:
             return self.__execute_step(previous_step_result)
         else:
-            return lambda other: self.__execute_step(previous_step_result, other)
+            return _functools.partial(self.__execute_step, previous_step_result)
 
 class TestCase:
     def __init__(self, steps):

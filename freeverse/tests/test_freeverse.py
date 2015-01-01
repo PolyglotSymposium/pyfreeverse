@@ -14,9 +14,13 @@ class TestStepTests(unittest.TestCase):
         stepResult = TestStep('description', lambda x: x).run(7)
         self.assertEqual(7, stepResult)
 
-    def test_passes_previous_step_result_and_curries_two_argument_test_step(self):
+    def test_partially_applies_previous_step_result_to_two_argument_test_step(self):
         stepResult = TestStep('Power function', lambda x, y: pow(x, y)).run(2)
         self.assertEqual(8, stepResult(3))
+
+    def test_partially_applies_previous_step_result_to_two_argument_test_step(self):
+        stepResult = TestStep('Power function', lambda x, y, z: x + y + z).run(1)
+        self.assertEqual(6, stepResult(2, 3))
 
     @unittest.skip('This is a known issue')
     def test_does_not_blow_up_when_trying_to_introspect_on_builtin_function(self):
