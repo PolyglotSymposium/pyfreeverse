@@ -3,7 +3,7 @@
 import unittest
 
 from freeverse import SpecFor, Should, Expect, It, FlatOutput
-from freeverse.freeverse import TestStep
+from freeverse.freeverse import TestStep, TestCase
 
 class TestStepTests(unittest.TestCase):
     def test_runs_zero_argument_test_step(self):
@@ -26,6 +26,18 @@ class TestStepTests(unittest.TestCase):
     def test_does_not_blow_up_when_trying_to_introspect_on_builtin_function(self):
         stepResult = TestStep('Power function', pow).run(2)
         self.assertEqual(8, stepResult(3))
+
+class TestCaseTests(unittest.TestCase):
+    def test_runs_set_of_one_test(self):
+        testResult = TestCase([TestStep('True', lambda: True)]).run()
+        self.assertTrue(testResult)
+
+    def test_passes_result_of_one_step_into_the_next(self):
+        testResult = TestCase([
+            TestStep('1024', lambda: 1024),
+            TestStep('plus 313', lambda x: x + 313)
+        ]).run()
+        self.assertEqual(1337, testResult)
 
 class FreeverseTests(unittest.TestCase):
     def setUp(self):

@@ -24,6 +24,9 @@ _countArgsOf = lambda func: len(__inspect.getargspec(func)[0])
 _takesNoArgs = lambda func: _countArgsOf(func) == 0
 
 class TestStep:
+    @classmethod
+    def runStep(cls, previous_step_result, step):
+        return step.run(previous_step_result)
 
     def __init__(self, description, func):
         self.__execute_step = func
@@ -39,9 +42,10 @@ class TestStep:
 
 class TestCase:
     def __init__(self, steps):
-        pass
+        self.__steps = steps
+
     def run(self):
-        pass
+        return _functools.reduce(TestStep.runStep, self.__steps, None)
 
 def _format_exception(exception):
     return '%s raised: %s' % (exception.__class__.__name__, exception)
