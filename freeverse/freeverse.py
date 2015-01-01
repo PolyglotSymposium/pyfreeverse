@@ -75,8 +75,8 @@ class Should:
         self.__function = function
 
     def as_test_step(self):
-        #exec_step = lambda prev_result: self.__function(ActualValue(prev_result))
-        return TestStep('should ' + self.__description, None)
+        exec_step = lambda prev_result: self.__function(ActualValue(prev_result))
+        return TestStep('should ' + self.__description, exec_step)
 
     def run(self, parent_output):
         try:

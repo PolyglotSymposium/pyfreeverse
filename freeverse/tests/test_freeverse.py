@@ -49,6 +49,11 @@ class ShouldTests(unittest.TestCase):
         testStep = should.as_test_step()
         self.assertEqual('should be true', testStep.description())
 
+    def test_wraps_test_step_function_argument_so_it_can_be_asserted_against(self):
+        should = Should('be true', lambda x: x)
+        testStep = should.as_test_step()
+        self.assertTrue(hasattr(testStep.run(5), 'should_be'))
+
 class FreeverseTests(unittest.TestCase):
     def setUp(self):
         self.spec = SpecFor('Tests for the Freeverse spec library')
