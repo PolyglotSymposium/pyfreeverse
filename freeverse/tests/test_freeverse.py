@@ -6,9 +6,13 @@ from freeverse import SpecFor, Should, Expect, It, FlatOutput
 from freeverse.freeverse import TestStep
 
 class TestStepTests(unittest.TestCase):
-    def test_first_step_happy_path(self):
+    def test_runs_zero_argument_test_step(self):
         stepResult = TestStep('True', lambda: True).run()
-        self.assertEqual(True, stepResult)
+        self.assertTrue(stepResult)
+
+    def test_passes_previous_step_result_to_one_argument_test_step(self):
+        stepResult = TestStep('True', lambda x: x).run(7)
+        self.assertEqual(7, stepResult)
 
 class FreeverseTests(unittest.TestCase):
     def setUp(self):

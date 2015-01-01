@@ -1,18 +1,5 @@
 from .expectations import ActualValue
 
-class TestStep:
-    def __init__(self, description, func):
-        self.__execute_step = func
-
-    def run(self):
-        return self.__execute_step()
-
-class TestCase:
-    def __init__(self, steps):
-        pass
-    def run(self):
-        pass
-
 class Result:
     def __init__(self, description, error, children=None):
         self.__description = description
@@ -32,10 +19,25 @@ class Result:
         return self.__children
 
 import inspect as __inspect
-_takesNoArgs = (lambda:
-    lambda func: len(__inspect.getargspec(func)[0]) == 0
-)()
+_countArgsOf = lambda func: len(__inspect.getargspec(func)[0])
+_takesNoArgs = lambda func: _countArgsOf(func) == 0
 
+class TestStep:
+    def __init__(self, description, func):
+        self.__execute_step = func
+
+    def run(self, previous_step_result=None):
+        numberOfArgs = _countArgsOf(self.__execute_step)
+        if numberOfArgs == 0:
+            return self.__execute_step()
+        else:
+            return self.__execute_step(previous_step_result)
+
+class TestCase:
+    def __init__(self, steps):
+        pass
+    def run(self):
+        pass
 
 def _format_exception(exception):
     return '%s raised: %s' % (exception.__class__.__name__, exception)
