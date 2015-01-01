@@ -79,11 +79,12 @@ class Should:
         return TestStep('should ' + self.__description, exec_step)
 
     def run(self, parent_output):
+        testStep = self.as_test_step()
         try:
-            message = self.__function(ActualValue(parent_output))
+            message = testStep.run(parent_output)
         except Exception as error:
             message = _format_exception(error)
-        return Result('should ' + self.__description, message)
+        return Result(testStep.description(), message)
 
 def make_phrase_from(obj):
     if type(obj) == type(()):
