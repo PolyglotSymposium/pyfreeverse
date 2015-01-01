@@ -30,8 +30,10 @@ class TestStep:
         numberOfArgs = _countArgsOf(self.__execute_step)
         if numberOfArgs == 0:
             return self.__execute_step()
-        else:
+        if numberOfArgs == 1:
             return self.__execute_step(previous_step_result)
+        else:
+            return lambda other: self.__execute_step(previous_step_result, other)
 
 class TestCase:
     def __init__(self, steps):
