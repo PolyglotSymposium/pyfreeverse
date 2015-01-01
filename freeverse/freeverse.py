@@ -29,7 +29,11 @@ class TestStep:
         return step.run(previous_step_result)
 
     def __init__(self, description, func):
+        self.__description = description
         self.__execute_step = func
+
+    def description(self):
+        return self.__description
 
     def run(self, previous_step_result=None):
         numberOfArgs = _countArgsOf(self.__execute_step)
@@ -69,6 +73,10 @@ class Should:
     def __init__(self, description, function):
         self.__description = description
         self.__function = function
+
+    def as_test_step(self):
+        #exec_step = lambda prev_result: self.__function(ActualValue(prev_result))
+        return TestStep('should ' + self.__description, None)
 
     def run(self, parent_output):
         try:

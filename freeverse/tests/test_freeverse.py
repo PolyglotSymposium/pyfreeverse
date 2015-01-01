@@ -6,6 +6,10 @@ from freeverse import SpecFor, Should, Expect, It, FlatOutput
 from freeverse.freeverse import TestStep, TestCase
 
 class TestStepTests(unittest.TestCase):
+    def test_step_has_description(self):
+        step = TestStep('True', lambda: True)
+        self.assertEqual('True', step.description())
+
     def test_runs_zero_argument_test_step(self):
         stepResult = TestStep('True', lambda: True).run()
         self.assertTrue(stepResult)
@@ -38,6 +42,12 @@ class TestCaseTests(unittest.TestCase):
             TestStep('plus 313', lambda x: x + 313)
         ]).run()
         self.assertEqual(1337, testResult)
+
+class ShouldTests(unittest.TestCase):
+    def test_adds_should_to_beginning_of_test_step_description(self):
+        should = Should('be true', It.should_be(True))
+        testStep = should.as_test_step()
+        self.assertEqual('should be true', testStep.description())
 
 class FreeverseTests(unittest.TestCase):
     def setUp(self):
