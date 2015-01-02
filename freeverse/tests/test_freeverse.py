@@ -3,7 +3,7 @@
 import unittest
 
 from freeverse import SpecFor, Should, Expect, It, FlatOutput
-from freeverse.freeverse import TestStep, TestCase, Verify
+from freeverse.freeverse import TestStep, TestCase, Verify, Phrase
 
 class TestStepTests(unittest.TestCase):
     def test_step_has_description(self):
@@ -60,6 +60,18 @@ class VerifyTests(unittest.TestCase):
         testStep = verify.as_test_step()
         self.assertEqual('should be itself', testStep.description())
         self.assertEqual(7, testStep.run(7))
+
+class PhraseTests(unittest.TestCase):
+    def test_can_be_converted_to_test_step(self):
+        verify = Phrase('The number 1337', lambda: 1337, [])
+        testStep = verify.as_test_step()
+        self.assertEqual('The number 1337', testStep.description())
+        self.assertEqual(1337, testStep.run())
+
+    def test_accepts_value_which_is_not_callable(self):
+        verify = Phrase('The number 1337', 1337, [])
+        testStep = verify.as_test_step()
+        self.assertEqual(1337, testStep.run())
 
 class FreeverseTests(unittest.TestCase):
     def setUp(self):

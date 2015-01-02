@@ -107,6 +107,10 @@ class Phrase:
         self.__function = function
         self.__children = (make_phrase_from(child) for child in children)
 
+    def as_test_step(self):
+        return TestStep(self.__description,
+                        self.__function if callable(self.__function) else lambda: self.__function)
+
     def __run_children(self, message, output):
         if message == '':
             return [child.run(output) for child in self.__children]
@@ -119,14 +123,9 @@ class Phrase:
     def run(self, parent_output=None):
         message = ''
         output = None
+        testStep = self.as_test_step()
         try:
-            if callable(self.__function):
-                if _takesNoArgs(self.__function):
-                    output = self.__function()
-                else:
-                    output = self.__function(parent_output)
-            else:
-                output = self.__function
+            output = testStep.run(parent_output)
         except Exception as error:
             message = _format_exception(error)
 
