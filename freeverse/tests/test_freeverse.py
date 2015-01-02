@@ -3,7 +3,7 @@
 import unittest
 
 from freeverse import SpecFor, Should, Expect, It, FlatOutput
-from freeverse.freeverse import TestStep, TestCase
+from freeverse.freeverse import TestStep, TestCase, Verify
 
 class TestStepTests(unittest.TestCase):
     def test_step_has_description(self):
@@ -53,6 +53,13 @@ class ShouldTests(unittest.TestCase):
         should = Should('be true', lambda x: x)
         testStep = should.as_test_step()
         self.assertTrue(hasattr(testStep.run(5), 'should_be'))
+
+class VerifyTests(unittest.TestCase):
+    def test_can_be_converted_to_test_step(self):
+        verify = Verify('should be itself', lambda x: x)
+        testStep = verify.as_test_step()
+        self.assertEqual('should be itself', testStep.description())
+        self.assertEqual(7, testStep.run(7))
 
 class FreeverseTests(unittest.TestCase):
     def setUp(self):

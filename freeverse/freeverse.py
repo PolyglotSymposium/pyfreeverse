@@ -59,15 +59,16 @@ class Verify:
         self.__description = description
         self.__function = function
 
+    def as_test_step(self):
+        return TestStep(self.__description, self.__function)
+
     def run(self, parent_output):
+        testStep = self.as_test_step()
         try:
-            if _takesNoArgs(self.__function):
-                message = self.__function()
-            else:
-                message = self.__function(parent_output)
+            message = testStep.run(parent_output)
         except Exception as error:
             message = _format_exception(error)
-        return Result(self.__description, message)
+        return Result(testStep.description(), message)
 
 class Should:
     def __init__(self, description, function):

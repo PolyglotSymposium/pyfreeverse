@@ -30,7 +30,7 @@ from freeverse import SpecFor, Should, Expect, It
 spec = SpecFor('README examples')
 
 spec.add('5', lambda: 5,
-    ('plus', lambda x: lambda y: x + y,
+    ('plus', int.__add__,
         ('2', lambda plus5: plus5(2), Should('be 7', It.should_be(7))),
         ('5', lambda plus5: plus5(5), Should('be 9', lambda nine: nine.should_be(9)))
     )
@@ -60,8 +60,9 @@ represents the result of one thing being piped in to the next:
     5 | +2 | 7 | passed
     5 | +5 | 10 | failed
 
-And these two execution sequences are independent and could be run in
-parallel. The output will look like this:
+And these two execution sequences are independent and could (in theory, though
+this has not been implemented yet) be run in parallel. The output will look like
+this:
 
     5 plus 2 should be 7
     5 plus 5 should be 9
