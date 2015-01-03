@@ -154,14 +154,14 @@ class FlatOutput:
         if parent_description == None:
             description = result.description()
         else:
-            description = '%s %s' % (parent_description, result.description())
+            description = u'%s %s' % (parent_description, result.description())
         if result.children() == None:
-            self.__stream.write('\t%s\n' % description)
+            self.__stream.write(u'\t%s\n' % description)
         else:
             for child_result in result.children():
                 self.__write_output(child_result, description)
 
     def write(self, results):
-        self.__stream.write(results.description() + '\n')
+        self.__stream.write(results.description() + u'\n')
         for result in results.children():
             self.__write_output(result)
