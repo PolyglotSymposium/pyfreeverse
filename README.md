@@ -1,6 +1,8 @@
 # Freeverse for Python
 ## Free-form, minimalistic specs (tests) that favor natural language
 
+[![Build Status](https://travis-ci.org/PolyglotSymposium/pyfreeverse.svg)](https://travis-ci.org/PolyglotSymposium/pyfreeverse)
+
 I'm trying to pioneer a new style of specs. So far I have just slapped a bunch
 of code together as a sort of brain dump. Soon it will be time to slow down and
 begin to shape this code more carefully.
