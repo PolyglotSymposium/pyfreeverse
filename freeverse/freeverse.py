@@ -117,7 +117,7 @@ class Phrase:
         else:
             return []
 
-    def flatten(self):
+    def as_test_cases(self):
         return self
 
     def run(self, parent_output=None):
@@ -140,7 +140,7 @@ class SpecFor:
         self.__children.append((description, function, children))
 
     def run(self):
-        tests = Phrase(self.__description, lambda: None, self.__children).flatten()
+        tests = Phrase(self.__description, None, self.__children).as_test_cases()
         return tests.run()
 
     def run_and_write_to(self, outputter):
