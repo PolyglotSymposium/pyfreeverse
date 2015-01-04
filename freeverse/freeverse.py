@@ -1,4 +1,5 @@
 from .expectations import ActualValue
+import test
 
 class Result:
     def __init__(self, description, error, children=None):
@@ -18,46 +19,6 @@ class Result:
     def children(self):
         return self.__children
 
-import inspect as __inspect
-import functools as _functools
-_countArgsOf = lambda func: len(__inspect.getargspec(func)[0])
-_takesNoArgs = lambda func: _countArgsOf(func) == 0
-
-class TestStep:
-    @classmethod
-    def runStep(cls, previous_step_result, step):
-        return step.run(previous_step_result)
-
-    def __init__(self, description, func):
-        self.__description = description
-        self.__execute_step = func
-
-    def description(self):
-        return self.__description
-
-    def run(self, previous_step_result=None):
-        numberOfArgs = _countArgsOf(self.__execute_step)
-        if numberOfArgs == 0:
-            return self.__execute_step()
-        if numberOfArgs == 1:
-            return self.__execute_step(previous_step_result)
-        else:
-            return _functools.partial(self.__execute_step, previous_step_result)
-
-class TestCase:
-    def __init__(self, steps):
-        self.__steps = steps
-
-    def run(self):
-        return _functools.reduce(TestStep.runStep, self.__steps, None)
-
-class TestSuite:
-    def __init__(self, cases):
-        self.__cases = cases
-
-    def run(self):
-        return [case.run() for case in self.__cases]
-
 def _format_exception(exception):
     return '%s raised: %s' % (exception.__class__.__name__, exception)
 
@@ -67,7 +28,7 @@ class Verify:
         self.__function = function
 
     def as_test_step(self):
-        return TestStep(self.__description, self.__function)
+        return test.Step(self.__description, self.__function)
 
     def run(self, parent_output):
         testStep = self.as_test_step()
@@ -84,7 +45,7 @@ class Should:
 
     def as_test_step(self):
         exec_step = lambda prev_result: self.__function(ActualValue(prev_result))
-        return TestStep('should ' + self.__description, exec_step)
+        return test.Step('should ' + self.__description, exec_step)
 
     def run(self, parent_output):
         testStep = self.as_test_step()
@@ -115,8 +76,8 @@ class Phrase:
         self.__children = (make_phrase_from(child) for child in children)
 
     def as_test_step(self):
-        return TestStep(self.__description,
-                        self.__function if callable(self.__function) else lambda: self.__function)
+        return test.Step(self.__description,
+                         self.__function if callable(self.__function) else lambda: self.__function)
 
     def __run_children(self, message, output):
         if message == '':
