@@ -33,17 +33,31 @@ class TestStepTests(unittest.TestCase):
 class TestCaseTests(unittest.TestCase):
     def test_runs_set_of_one_test(self):
         testResult = test.Case([test.Step('True', lambda: True)]).run()
-        self.assertTrue(testResult)
+        self.assertTrue(testResult.message())
 
     def test_passes_result_of_one_step_into_the_next(self):
         testResult = test.Case([
             test.Step('1024', lambda: 1024),
             test.Step('plus 313', lambda x: x + 313)
         ]).run()
-        self.assertEqual(1337, testResult)
+        self.assertEqual(1337, testResult.message())
+
+    def test_considers_test_to_have_passed_if_last_step_returns_empty_string(self):
+        testResult = test.Case([
+            test.Step('1024', lambda: 1024),
+            test.Step('plus 313', lambda x: '')
+        ]).run()
+        self.assertTrue(testResult.passed())
+
+    def test_considers_test_to_have_passed_if_last_step_returns_failure_message(self):
+        testResult = test.Case([
+            test.Step('1024', lambda: 1024),
+            test.Step('plus 313', lambda x: 'failure message')
+        ]).run()
+        self.assertFalse(testResult.passed())
 
 class TestSuiteTests(unittest.TestCase):
-    def test_when_suite_is_run_it_runs_all_test_cases_in_it(self):
+    def test_returns_one_result_for_each_test_case(self):
         cases = [
             test.Case([test.Step("One", lambda: 1)]),
             test.Case([test.Step("Two", lambda: 2)]),
@@ -52,4 +66,4 @@ class TestSuiteTests(unittest.TestCase):
 
         result = test.Suite(cases).run()
 
-        self.assertEqual([1, 2, 3], result)
+        self.assertEqual(3, len(result))

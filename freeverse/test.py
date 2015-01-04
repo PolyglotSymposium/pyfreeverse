@@ -1,6 +1,16 @@
 import inspect
 import functools
 
+class Result:
+    def __init__(self, message):
+        self.__message = message
+
+    def passed(self):
+        return self.__message == ''
+
+    def message(self):
+        return self.__message
+
 class Step:
     @classmethod
     def runStep(cls, previous_step_result, step):
@@ -30,7 +40,7 @@ class Case:
         self.__steps = steps
 
     def run(self):
-        return functools.reduce(Step.runStep, self.__steps, None)
+        return Result(functools.reduce(Step.runStep, self.__steps, None))
 
 class Suite:
     def __init__(self, cases):
