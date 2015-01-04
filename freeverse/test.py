@@ -39,8 +39,15 @@ class Case:
     def __init__(self, steps):
         self.__steps = steps
 
+    def _format_exception(self, exception):
+        return '%s raised: %s' % (exception.__class__.__name__, exception)
+
     def run(self):
-        return Result(functools.reduce(Step.runStep, self.__steps, None))
+        try:
+            message = functools.reduce(Step.runStep, self.__steps, None)
+        except Exception as error:
+            message = self._format_exception(error)
+        return Result(message)
 
 class Suite:
     def __init__(self, cases):

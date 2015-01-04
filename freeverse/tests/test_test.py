@@ -49,10 +49,17 @@ class TestCaseTests(unittest.TestCase):
         ]).run()
         self.assertTrue(testResult.passed())
 
-    def test_considers_test_to_have_passed_if_last_step_returns_failure_message(self):
+    def test_considers_test_to_have_failed_if_last_step_returns_failure_message(self):
         testResult = test.Case([
             test.Step('1024', lambda: 1024),
             test.Step('plus 313', lambda x: 'failure message')
+        ]).run()
+        self.assertFalse(testResult.passed())
+
+    def test_considers_test_to_have_failed_if_a_step_blew_up(self):
+        testResult = test.Case([
+            test.Step('1024', lambda: blow_up),
+            test.Step('plus 313', lambda x: '')
         ]).run()
         self.assertFalse(testResult.passed())
 
