@@ -51,6 +51,13 @@ class TestCase:
     def run(self):
         return _functools.reduce(TestStep.runStep, self.__steps, None)
 
+class TestSuite:
+    def __init__(self, cases):
+        self.__cases = cases
+
+    def run(self):
+        return [case.run() for case in self.__cases]
+
 def _format_exception(exception):
     return '%s raised: %s' % (exception.__class__.__name__, exception)
 

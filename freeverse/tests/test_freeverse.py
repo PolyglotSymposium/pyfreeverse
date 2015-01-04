@@ -3,7 +3,8 @@
 import unittest
 
 from freeverse import SpecFor, Should, Expect, It, FlatOutput
-from freeverse.freeverse import TestStep, TestCase, Verify, Phrase
+from freeverse.freeverse import TestStep, TestCase, TestSuite
+from freeverse.freeverse import Verify, Phrase
 
 class TestStepTests(unittest.TestCase):
     def test_step_has_description(self):
@@ -42,6 +43,18 @@ class TestCaseTests(unittest.TestCase):
             TestStep('plus 313', lambda x: x + 313)
         ]).run()
         self.assertEqual(1337, testResult)
+
+class TestSuiteTests(unittest.TestCase):
+    def test_when_suite_is_run_it_runs_all_test_cases_in_it(self):
+        cases = [
+            TestCase([TestStep("One", lambda: 1)]),
+            TestCase([TestStep("Two", lambda: 2)]),
+            TestCase([TestStep("Three", lambda: 3)])
+        ]
+
+        result = TestSuite(cases).run()
+
+        self.assertEqual([1, 2, 3], result)
 
 class ShouldTests(unittest.TestCase):
     def test_adds_should_to_beginning_of_test_step_description(self):
