@@ -1,5 +1,5 @@
 from .expectations import ActualValue
-import test
+from .test import Step
 
 class Result:
     def __init__(self, description, error, children=None):
@@ -28,7 +28,7 @@ class Verify:
         self.__function = function
 
     def as_test_step(self):
-        return test.Step(self.__description, self.__function)
+        return Step(self.__description, self.__function)
 
     def run(self, parent_output):
         testStep = self.as_test_step()
@@ -45,7 +45,7 @@ class Should:
 
     def as_test_step(self):
         exec_step = lambda prev_result: self.__function(ActualValue(prev_result))
-        return test.Step('should ' + self.__description, exec_step)
+        return Step('should ' + self.__description, exec_step)
 
     def run(self, parent_output):
         testStep = self.as_test_step()
@@ -76,7 +76,7 @@ class Phrase:
         self.__children = (make_phrase_from(child) for child in children)
 
     def as_test_step(self):
-        return test.Step(self.__description,
+        return Step(self.__description,
                          self.__function if callable(self.__function) else lambda: self.__function)
 
     def __run_children(self, message, output):
